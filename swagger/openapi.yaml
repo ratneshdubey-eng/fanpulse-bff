@@ -1,0 +1,385 @@
+openapi: 3.0.0
+info:
+  title: FanPulse API
+  version: "1.0"
+  description: API for managing teams, players, matches, competitions, and areas.
+
+servers:
+  - url: http://localhost:5000
+
+paths:
+  /api/teams:
+    get:
+      summary: Get a list of all teams
+      tags:
+        - Teams
+      responses:
+        '200':
+          description: A list of teams
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Team'
+
+  /api/teams/{id}:
+    get:
+      summary: Get details of a specific team by ID
+      tags:
+        - Teams
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Team details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamDetail'
+        '404':
+          description: Team not found
+
+  /api/players:
+    get:
+      summary: Get a list of all players
+      tags:
+        - Players
+      responses:
+        '200':
+          description: A list of players
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Player'
+
+  /api/players/{id}:
+    get:
+      summary: Get details of a specific player by ID
+      tags:
+        - Players
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Player details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayerDetail'
+        '404':
+          description: Player not found
+
+  /api/matches:
+    get:
+      summary: Get a list of matches with optional filters
+      tags:
+        - Matches
+      parameters:
+        - name: date
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: status
+          in: query
+          schema:
+            type: string
+          description: Filter matches by status (scheduled, live, completed)
+        - name: season
+          in: query
+          schema:
+            type: string
+        - name: team_name
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of matches
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Match'
+
+  /api/competitions:
+    get:
+      summary: Get a list of all competitions
+      tags:
+        - Competitions
+      responses:
+        '200':
+          description: A list of competitions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Competition'
+
+  /api/areas:
+    get:
+      summary: Get a list of all areas
+      tags:
+        - Areas
+      responses:
+        '200':
+          description: A list of areas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Area'
+
+  /api/areas/{area_id}:
+    get:
+      summary: Get details of a specific area by ID
+      tags:
+        - Areas
+      parameters:
+        - name: area_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Area details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AreaDetail'
+        '404':
+          description: Area not found
+
+components:
+  schemas:
+    Team:
+      type: object
+      properties:
+        team_id:
+          type: string
+        name:
+          type: string
+        logo_url:
+          type: string
+          format: uri
+
+    TeamDetail:
+      type: object
+      properties:
+        team_id:
+          type: string
+        name:
+          type: string
+        logo_url:
+          type: string
+          format: uri
+        players:
+          type: array
+          items:
+            $ref: '#/components/schemas/Player'
+        season_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeasonHistory'
+
+    Player:
+      type: object
+      properties:
+        player_id:
+          type: string
+        name:
+          type: string
+        position:
+          type: string
+        image_url:
+          type: string
+          format: uri
+
+    PlayerDetail:
+      type: object
+      properties:
+        player_id:
+          type: string
+        name:
+          type: string
+        position:
+          type: string
+        image_url:
+          type: string
+          format: uri
+        country_name:
+          type: string
+        date_of_birth:
+          type: string
+          format: date
+        height_cm:
+          type: integer
+        jersey_number:
+          type: integer
+        player_image_url:
+          type: string
+          format: uri
+        social_media:
+          type: object
+          properties:
+            facebook:
+              type: string
+              format: uri
+            instagram:
+              type: string
+              format: uri
+            twitter:
+              type: string
+              format: uri
+            youtube:
+              type: string
+              format: uri
+        stats:
+          type: object
+          properties:
+            assists_per_game:
+              type: string
+            blocks_per_game:
+              type: string
+            field_goal_percentage:
+              type: string
+            free_throw_percentage:
+              type: string
+            games_played:
+              type: string
+            minutes_per_game:
+              type: string
+            personal_fouls_per_game:
+              type: string
+            points_per_game:
+              type: string
+            rebounds_per_game:
+              type: string
+            steals_per_game:
+              type: string
+            three_point_percentage:
+              type: string
+            turnovers_per_game:
+              type: string
+        team_id:
+          type: string
+        weight_kg:
+          type: integer
+
+    Match:
+      type: object
+      properties:
+        match_id:
+          type: string
+        date:
+          type: string
+          format: date
+        status:
+          type: string
+        team_a:
+          $ref: '#/components/schemas/Team'
+        team_b:
+          $ref: '#/components/schemas/Team'
+        score:
+          type: string
+
+    Competition:
+      type: object
+      properties:
+        competition_id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        season:
+          type: string
+
+    Area:
+      type: object
+      properties:
+        area_id:
+          type: string
+        name:
+          type: string
+        image_url:
+          type: string
+          format: uri
+        location:
+          type: string
+        country:
+          type: object
+          additionalProperties: true
+
+    AreaDetail:
+      type: object
+      properties:
+        area_id:
+          type: string
+        name:
+          type: string
+        image_url:
+          type: string
+          format: uri
+        location:
+          type: string
+        capacity:
+          type: array
+          items:
+            type: object
+            properties:
+              count:
+                type: integer
+              type:
+                type: string
+        country:
+          type: object
+          additionalProperties: true
+        events:
+          type: array
+          items:
+            type: object
+            properties:
+              event_date:
+                type: string
+                format: date-time
+              event_name:
+                type: string
+        facilities:
+          type: array
+          items:
+            type: string
+
+    SeasonHistory:
+      type: object
+      properties:
+        season:
+          type: string
+          description: The season year
+        wins:
+          type: integer
+          description: The number of wins in the season
+        losses:
+          type: integer
+          description: The number of losses in the season
+        draws:
+          type: integer
+          description: The number of draws in the season
+        championships:
+          type: integer
+          description: The number of championships won in the season

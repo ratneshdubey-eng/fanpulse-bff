@@ -1,0 +1,9 @@
+Flask>=2.0
+Flask-RESTful>=0.3.9
+Flask-Cors>=3.1.1
+requests>=2.25.1
+
+[dev]
+flake8
+pytest
+black
