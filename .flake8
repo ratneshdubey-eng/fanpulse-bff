@@ -1,0 +1,17 @@
+[flake8]
+# Maximum line length (default is 79 characters, you can increase it)
+max-line-length = 120
+
+# Files to be checked (Python files only)
+files = 
+    *.py
+
+# How many errors/flaws to report at max
+max-report-count = 100
+
+# Complexity (Cyclomatic complexity limit)
+max-complexity = 10
+
+# Reporting errors as per severity
+select = 
+    E, F, W
